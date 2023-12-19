@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "listaD.h"
 #include <stdlib.h>
+
 Nodo *newNodo(int num) {
     Nodo * aux=NULL;
     aux=malloc(sizeof(Nodo));
@@ -33,8 +34,7 @@ Lista *newLista() {
 void enlistar(Lista *lista, Nodo *nodo) {
     if(lista->cabeza==NULL) {//la lista esta vacia-> insertar al principio
         lista->cabeza =nodo;
-        nodo->ant=NULL;
-        nodo->sig=NULL;
+
     }else{ //insertar al final
         Nodo * aux = lista->cabeza;
         while (aux->sig != NULL){
@@ -74,18 +74,19 @@ void enlistarOrdenado(Lista *lista, Nodo *nodo) {
             act->ant=nodo;
 
         }
-
     }
-
 }
 
 void eliminar(Lista *lista, Nodo *nodo) {
     // caso 1: lista vacia
     if(lista->cabeza == NULL){
         printf("La lista esta vacia.\n");
+        return;
     }
+
     Nodo * act= lista->cabeza;
     Nodo * ant = NULL;
+
     while(act!= NULL && act->valor!= nodo->valor){
         ant=act;
         act=act->sig;
@@ -93,16 +94,14 @@ void eliminar(Lista *lista, Nodo *nodo) {
     if(act == NULL){ //el elemento no esta en la lista
         printf("El elemento %d no esta en la lista.",nodo->valor);
         return;
+    }
+    if(act == lista->cabeza) { //eliminar el primero
+        lista->cabeza = act->sig;
+        free(act);
     }else{
-        if(act == lista->cabeza) { //eliminar el primero
-            lista->cabeza = act->sig;
-            free(act);
-        }else{
-            //eliminar en el medio
-            ant->sig=act->sig;
-            act->sig->ant=ant;
-            free(act);
-        }
+        //eliminar en el medio o en el final
+        ant->sig=act->sig;
+        free(act);
     }
 }
 
@@ -116,6 +115,7 @@ void print(Lista *lista) {
         aux=aux->sig;
     }
 }
+
 
 void concatenar(Lista *lista1, Lista *lista2) {
     Nodo * ult = lista1->cabeza;
@@ -172,7 +172,7 @@ Lista *resta(Lista *lista1, Lista *lista2) {
         }else if (aux1->valor == aux2->valor){
             aux1=aux1->sig;
             aux2=aux2->sig;
-        }else if (aux1!= NULL && aux2 == NULL){
+        }else {
             enlistar(listaR, newNodo(aux1->valor));
             aux1=aux1->sig;
         }
